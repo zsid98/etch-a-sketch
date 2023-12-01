@@ -1,0 +1,10 @@
+Yes
+- add option to remove grid
+- add rainbow option
+- change to draw while dragging the mouse
+- add option to change bg color
+
+
+
+Maybe
+- modify color picker to be a circle?
