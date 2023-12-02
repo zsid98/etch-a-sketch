@@ -157,16 +157,10 @@ eraser.addEventListener('click', () => {
 
 
 // Change background
-
 bgColor = document.querySelector("#bg").value;
 bgToggle.addEventListener("change", () => {
-    let newBg = bgToggle.value;
     document.querySelectorAll(".cell").forEach((c) => {
-        if (c.style.backgroundColor == bgColor) {
-            c.style.backgroundColor = "black";
-        } else if (c.style.backgroundColor !== bgColor){
-            c.style.backgroundColor = newBg;
-        };
+        c.style.backgroundColor = document.querySelector("#bg").value;
     });
 });
 
