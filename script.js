@@ -1,6 +1,8 @@
 // Board dimensions
 let board = document.querySelector("#board");
 let boardWidth = parseInt(board.offsetWidth);
+let isDrawing = false;
+let bgToggle = document.querySelector("#bg");
 
 // Slider values
 let points = document.querySelector("#points");
@@ -8,6 +10,29 @@ let slider = document.querySelector("#slider");
 points.textContent = slider.value;
 let numCells = slider.value;
 
+// Draw functions 
+function startDrawing(event) {
+    isDrawing = true;
+    draw(event);
+}
+function draw(event) {
+    if (!isDrawing) return;
+
+    let square = event.target;
+    if (rainbow.value == 1) {
+        square.style.backgroundColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+    } else {
+        if (eraser.value == 1 && rainbow.value == 0) {
+            square.style.backgroundColor = bgToggle.value;    
+        } else if (eraser.value == 0) {
+            square.style.backgroundColor = document.querySelector("#pen").value;
+        }
+    }
+};
+function stopDrawing() {
+    isDrawing = false;
+    return;
+};
 
 function deleteBoard() {
     document.querySelectorAll(".row").forEach(e => {e.remove()});
@@ -15,6 +40,7 @@ function deleteBoard() {
 
 let bgColor = document.querySelector("#bg").value;
 
+// Drawing the board
 function drawBoard(grid, bgColor) {
     deleteBoard();
     numCells = slider.value;
@@ -49,10 +75,21 @@ slider.addEventListener('input', () => {
     drawBoard(numCells, bgColor);
 });
 
+// Drawing
+board.addEventListener('mousedown', startDrawing);
+board.addEventListener('mousemove', draw);
+board.addEventListener('mouseup', stopDrawing);
+
+// Clear the entire board
+let clear = document.querySelector("#clear");
+clear.addEventListener('click', () => {
+    document.querySelectorAll(".cell").forEach((item) => {
+        item.style.backgroundColor = document.querySelector("#bg").value;
+    });
+});
+
 // Remove grid
 let gridToggle = document.querySelector("#gridtoggle");
-
-
 gridToggle.addEventListener('click', () => {
     if (gridToggle.value == 0) {
         gridToggle.value = 1;
@@ -74,17 +111,21 @@ gridToggle.addEventListener('click', () => {
 });
 
 
-// Rainbow
+// Rainbow and eraser toggles
 
 let rainbow = document.querySelector("#rainbow");
-rainbow.value = 0;
-
+let eraser = document.querySelector("#eraser");
 rainbow.addEventListener('click', () => {
     if (rainbow.value == 0) {
         rainbow.value = 1;
         rainbow.style.color = "rgb(7, 3, 46)";
         rainbow.style.border = "2px solid rgb(7, 3, 46)";
-        rainbow.style.backgroundColor = "rgb(17, 236, 17)";   
+        rainbow.style.backgroundColor = "rgb(17, 236, 17)";
+        
+        eraser.value = 0;
+        eraser.style.color = "rgb(17, 236, 17)";
+        eraser.style.border = "2px solid rgb(17, 236, 17)";
+        eraser.style.backgroundColor = "rgb(7, 3, 46)";  
     } else if (rainbow.value == 1) {
         rainbow.value = 0;
         rainbow.style.color = "rgb(17, 236, 17)";
@@ -92,61 +133,43 @@ rainbow.addEventListener('click', () => {
         rainbow.style.backgroundColor = "rgb(7, 3, 46)";
     }
 });
-
-
-
-// Pen
-board.addEventListener('mouseover', event => {
-    let square = event.target;
-    if (rainbow.value == 1) {
-        square.style.backgroundColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-    } else {
-        if (eraser.value == 1) {
-            square.style.backgroundColor = document.querySelector("#bg").value;    
-        } else if (eraser.value == 0) {
-            square.style.backgroundColor = document.querySelector("#pen").value;
-        }
-    }
-});
-
-
-// Clear the entire board
-let clear = document.querySelector("#clear");
-clear.addEventListener('click', () => {
-    document.querySelectorAll(".cell").forEach((item) => {
-        item.style.backgroundColor = document.querySelector("#bg").value;
-    });
-});
-
-// Eraser
-let eraser = document.querySelector("#eraser");
-
 eraser.addEventListener('click', () => {
     if (eraser.value == 0) {
         eraser.value = 1;
         eraser.style.color = "rgb(7, 3, 46)";
         eraser.style.border = "2px solid rgb(7, 3, 46)";
         eraser.style.backgroundColor = "rgb(17, 236, 17)";
-        
+
+        rainbow.value = 0;
+        rainbow.style.color = "rgb(17, 236, 17)";
+        rainbow.style.border = "2px solid rgb(17, 236, 17)";
+        rainbow.style.backgroundColor = "rgb(7, 3, 46)"; 
+
+
     } else if (eraser.value == 1) {
         eraser.value = 0;
         eraser.style.color = "rgb(17, 236, 17)";
         eraser.style.border = "2px solid rgb(17, 236, 17)";
         eraser.style.backgroundColor = "rgb(7, 3, 46)";
-       
+
     }
 });
 
+
 // Change background
-let bgToggle = document.querySelector("#bg");
+
+bgColor = document.querySelector("#bg").value;
 bgToggle.addEventListener("change", () => {
+    let newBg = bgToggle.value;
     document.querySelectorAll(".cell").forEach((c) => {
-        c.style.backgroundColor = document.querySelector("#bg").value;
-    })
-    
+        if (c.style.backgroundColor == bgColor) {
+            c.style.backgroundColor = "black";
+        } else if (c.style.backgroundColor !== bgColor){
+            c.style.backgroundColor = newBg;
+        };
+    });
 });
 
-// Eraser 
 
 
 
